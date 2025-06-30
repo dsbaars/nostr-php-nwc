@@ -1,5 +1,8 @@
 # Nostr Wallet Connect (NIP-47) implementation in PHP (nostr-php)
 
+![CI](https://github.com/dsbaars/nostr-php-nwc/actions/workflows/ci.yml/badge.svg)
+![Packagist PHP Version](https://img.shields.io/packagist/dependency-v/dsbaars/nostr-php-nwc/php)
+
 This project contains a complete client-side implementation of [NIP-47 Nostr Wallet Connect](https://github.com/nostr-protocol/nips/blob/master/47.md) for PHP, building upon [nostr-php](https://github.com/nostrver-se/nostr-php).
 
 This project applied for the [NWC Hackathon Grant on Geyser](https://geyser.fund/grants/16) ([Geyser project](https://geyser.fund/project/nwcnostrphp?hero=djuri))
@@ -247,45 +250,95 @@ src/Nip47/
 
 ## Examples
 
+This project includes working examples demonstrating all NIP-47 functionality with a centralized configuration system.
+
+### Quick Start
+
+First, configure your wallet connection:
+
+```bash
+cd examples/
+cp config.php.example config.php
+# Edit config.php with your actual NWC URI
+```
+
 ### Running Examples
 
 ```bash
-# Basic client usage
-php src/Examples/nwc/client-example.php
+cd examples/
 
-# URI parsing and validation  
-php src/Examples/nwc/uri-parsing-example.php
+# Complete wallet functionality demo
+php client-example.php
 
-# Complete payment flow
-php src/Examples/nwc/payment-flow-example.php
+# URI parsing and validation
+php uri-parsing-example.php
 
-# Real-time notifications
-php src/Examples/nwc/real-notifications-example.php
+# End-to-end payment workflow
+php payment-flow-example.php
+
+# Real-time notification listening
+php notification-listener.php
+
+# Simple wallet info and balance check
+php get-info-command.php
+```
+
+### Configuration
+
+The examples use environment variables for easy configuration:
+
+```bash
+# Set your NWC URI
+export NWC_URI="nostr+walletconnect://your-wallet-details"
+
+# Enable verbose output
+export NWC_VERBOSE=true
+
+# Run any example
+php client-example.php
 ```
 
 ### Example Output
 
 ```
-NWC Payment Flow Example
-========================
+Nostr Wallet Connect Client Example
+===================================
 
-1. Connecting to wallet...
-   ✓ Connected to wallet: b889ff5b1513b641...
+1. Parsing NWC URI...
+   ✓ Wallet Pubkey: b889ff5b1513b641e2a139f661a661364979c5beee91842f8f0ef42ab558e9d4
+   ✓ Relays: wss://relay.getalby.com/v1
+   ✓ Secret: 71a8c14c...
+   ✓ Lightning Address: wallet@example.com
 
-2. Checking wallet capabilities...
-   ✓ Supported methods: get_balance, pay_invoice, make_invoice, lookup_invoice
-   ✓ All required methods are supported
+2. Creating NWC client...
+   ✓ Client created with pubkey: a1b2c3d4e5f6789...
 
-3. Checking initial balance...
-   ✓ Current balance: 100,000 msats
-     (100 sats)
+3. Getting wallet info...
+   ✓ Wallet connected successfully!
+     - Alias: My Lightning Wallet
+     - Network: bitcoin
+     - Supported methods: get_balance, pay_invoice, make_invoice, lookup_invoice
+     - Supported notifications: payment_received, payment_sent
 
-4. Creating a test invoice...
-   ✓ Invoice created successfully!
-     - Amount: 1000 msats
-     - Description: Test invoice for NWC payment flow
-     - Payment Hash: a1b2c3d4e5f6789...
-     - Invoice: lnbc10n1pjw8...
+4. Getting wallet balance...
+   ✓ Balance: 100000 msats
+     - In sats: 100 sats
+     - In BTC: 0.00000100 BTC
+
+5. Creating invoice...
+   ✓ Invoice created!
+     - Amount: 21000 msats
+     - Description: Test invoice from NWC client
+     - Invoice: lnbc210n1pjw8...
+
+6. List transactions...
+   ✓ Found 5 transactions
+   - Incoming: 3
+   - Outgoing: 2
+   - Total amount: 150000 msats
+   - Total fees: 2100 msats
+
+Example completed successfully!
 ```
 
 ## Error Handling
@@ -334,10 +387,40 @@ This implementation supports:
 
 ⚠️ **Important**: Be careful when testing with real wallets and real Bitcoin!
 
-1. Use testnet wallets for development
-2. Start with small amounts
-3. Verify all parameters before executing payments
-4. Check wallet balance limits and capabilities
+### Running Tests
+
+```bash
+# Run all tests
+php vendor/bin/phpunit tests/
+
+# Run specific test file
+php vendor/bin/phpunit tests/Nip47Test.php
+```
+
+### Testing with Examples
+
+1. **Use testnet wallets** for development
+2. **Start with small amounts** - examples use 1-100 sats by default
+3. **Configure safely** - set `NWC_VERBOSE=true` for detailed output
+4. **Verify parameters** before executing payments
+5. **Check capabilities** with `get-info-command.php` first
+
+### Test Configuration
+
+```bash
+# Use testnet amounts
+export NWC_TEST_AMOUNT=1000      # 1 sat
+export NWC_SMALL_AMOUNT=21000    # 21 sats  
+export NWC_MEDIUM_AMOUNT=100000  # 100 sats
+
+# Enable verbose mode
+export NWC_VERBOSE=true
+
+# Test basic functionality
+cd examples/
+php get-info-command.php
+php client-example.php
+```
 
 ## Integration
 
