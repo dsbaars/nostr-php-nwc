@@ -1,0 +1,23 @@
+<?php
+
+// Example configuration file for NWC examples
+// Copy this file to config.php and update with your actual values
+
+return [
+    // Your NWC connection URI - replace with your actual wallet's URI
+    'nwc_uri' => 'nostr+walletconnect://WALLET_PUBKEY?relay=wss://relay.example.com&secret=CLIENT_SECRET&lud16=wallet@example.com',
+    
+    // Alternative URIs for testing different wallets (uncomment to use)
+    // 'nwc_uri' => 'nostr+walletconnect://b889ff5b1513b641e2a139f661a661364979c5beee91842f8f0ef42ab558e9d4?relay=wss://relay.getalby.com/v1&secret=71a8c14c1407c113601079c4302dab36460f0ccd0ad506f1f2dc73b5100e4f3c&lud16=user@getalby.com',
+    // 'nwc_uri' => 'nostr+walletconnect://4ac16ad3791d34e735cded8d2d1865fa05c295775e5994bb25ac0056b3197c86?relay=wss://relay.coinos.io&secret=ef823148eb754944fea5b1eb00963c35d9787225b0ba15490fcaa0dc46b4eed2&lud16=user@coinos.io',
+    
+    // Example settings
+    'verbose' => false,              // Enable verbose output in examples
+    'timeout' => 30,                 // Command timeout in seconds
+    'lookback_seconds' => 300,       // Notification lookback period (5 minutes)
+    
+    // Test amounts (in millisatoshis)
+    'test_amount' => 1000,           // 1 sat
+    'small_amount' => 21000,         // 21 sats
+    'medium_amount' => 100000,       // 100 sats
+];

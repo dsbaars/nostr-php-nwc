@@ -1,0 +1,5 @@
+# Ignore actual configuration file (contains wallet credentials)
+config.php
+
+# Keep the example file
+!config.php.example 

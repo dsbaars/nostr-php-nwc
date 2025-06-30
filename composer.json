@@ -1,0 +1,28 @@
+{
+    "name": "dsbaars/nostr-php-nwc",
+    "description": "Nostr Wallet Connect (NIP-47) implementation in PHP (nostr-php)",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "dsbaars\\nostr\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Djuri Baars",
+            "email": "dsbaars@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "swentel/nostr-php": "^1.9",
+        "valtzu/guzzle-websocket-middleware": "^0.3.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.76",
+        "phpunit/phpunit": "^11.5"
+    },
+    "scripts": {
+        "lint": "@php vendor/bin/php-cs-fixer fix -v"
+    }
+}
