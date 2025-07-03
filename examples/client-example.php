@@ -51,6 +51,14 @@ try {
             if ($info->supportsNotifications()) {
                 echo "     - Supported notifications: " . implode(', ', $info->getNotifications()) . PHP_EOL;
             }
+            if ($info->supportedEncryption()) {
+                echo "     - Supported encryption: " . implode(', ', $info->getSupportedEncryptions()) . PHP_EOL;
+            }
+
+            if (in_array('nip44_v2', $info->getSupportedEncryptions())) {
+                $client->setEncryption('nip44_v2');
+                echo "     - Using encryption: " . $client->getEncryptionMethod() . PHP_EOL;
+            } 
         } else {
             echo "   ✗ Failed to get wallet info: " . $info->getErrorMessage() . PHP_EOL;
         }
@@ -119,26 +127,24 @@ try {
     echo PHP_EOL;
 
     // Pay an invoice (commented out to avoid actual payments)
-    /*
-    echo "6. Paying invoice..." . PHP_EOL;
-    try {
-        $invoiceToPay = "lnbc10n1..."; // Replace with actual invoice
+    // echo "6. Paying invoice..." . PHP_EOL;
+    // try {
+    //     $invoiceToPay = "lnbc210n1p5xgr4gpp57ht97c9pndqnq0xaus5ft4e6e9wftc03xxqs6r7vdv4cyy65d5jsdpv2phhwetjv4jzqcneypqyc6t8dp6xu6twva2xjuzzda6qcqzysxqrrsssp5vmt84msaxkxu4vazjej95upw2x3saunc0krf9nnem4sz86kjr97q9qxpqysgqs6t9sqxynnfsz55khv5hnyf3gqsdznk09ek38y8ftvwwrvp5mgvpky3u5dv4sy98q47nut307jnvd67lz094fpfrqku6heq00k6h5vqpp3ql9t"; // Replace with actual invoice
 
-        $payment = $client->payInvoice($invoiceToPay);
-        if ($payment->isPaymentSuccessful()) {
-            echo "   ✓ Payment successful!" . PHP_EOL;
-            echo "     - Preimage: " . $payment->getPreimage() . PHP_EOL;
-            if ($payment->getFeesPaid()) {
-                echo "     - Fees paid: " . $payment->getFeesPaid() . " msats" . PHP_EOL;
-            }
-        } else {
-            echo "   ✗ Payment failed: " . $payment->getErrorMessage() . PHP_EOL;
-        }
-    } catch (NwcException $e) {
-        echo "   ✗ Error paying invoice: " . $e->getMessage() . PHP_EOL;
-    }
-    echo PHP_EOL;
-    */
+    //     $payment = $client->payInvoice($invoiceToPay);
+    //     if ($payment->isPaymentSuccessful()) {
+    //         echo "   ✓ Payment successful!" . PHP_EOL;
+    //         echo "     - Preimage: " . $payment->getPreimage() . PHP_EOL;
+    //         if ($payment->getFeesPaid()) {
+    //             echo "     - Fees paid: " . $payment->getFeesPaid() . " msats" . PHP_EOL;
+    //         }
+    //     } else {
+    //         echo "   ✗ Payment failed: " . $payment->getErrorMessage() . PHP_EOL;
+    //     }
+    // } catch (NwcException $e) {
+    //     echo "   ✗ Error paying invoice: " . $e->getMessage() . PHP_EOL;
+    // }
+    // echo PHP_EOL;
 
     echo "Example completed successfully!" . PHP_EOL;
 } catch (Exception $e) {

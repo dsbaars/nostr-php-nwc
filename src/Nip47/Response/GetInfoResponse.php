@@ -120,4 +120,24 @@ class GetInfoResponse extends AbstractResponse
     {
         return in_array($notificationType, $this->getNotifications());
     }
+
+    /**
+     * Check if encryption is supported.
+     *
+     * @return bool
+     */
+    public function supportedEncryption(): bool
+    {
+        return !empty($this->getSupportedEncryptions());
+    }
+
+    /**
+     * Get the list of supported encryption schemes.
+     *
+     * @return array
+     */
+    public function getSupportedEncryptions(): array
+    {
+        return $this->getResultField('encryption', []);
+    }
 }

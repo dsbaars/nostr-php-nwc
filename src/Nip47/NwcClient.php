@@ -51,6 +51,7 @@ class NwcClient
     private string $clientPrivkey;
     private string $clientPubkey;
     private ?AbstractLogger $logger;
+    private string $encryptionMethod = 'nip04'; // Default encryption method
 
     /**
      * Create a new NWC client.
@@ -111,6 +112,7 @@ class NwcClient
                 $result = [
                     'methods' => $infoEvent->getSupportedMethods(),
                     'notifications' => $infoEvent->getSupportedNotifications(),
+                    'encryption' => $infoEvent->getSupportedEncryptions(),
                 ];
 
                 return new GetInfoResponse('get_info', $result);
@@ -309,7 +311,7 @@ class NwcClient
         $command->validate();
 
         // Create request event
-        $requestEvent = new RequestEvent($command, $this->clientPrivkey, $this->nwcUri->getWalletPubkey());
+        $requestEvent = new RequestEvent($command, $this->clientPrivkey, $this->nwcUri->getWalletPubkey(), null, $this->encryptionMethod);
 
         // Sign the event
         $this->signService->signEvent($requestEvent, $this->clientPrivkey);
@@ -569,12 +571,33 @@ class NwcClient
                                         ]);
 
                                         try {
-                                            // Decrypt and parse response
-                                            $decryptedContent = \swentel\nostr\Encryption\Nip04::decrypt(
-                                                $relayResponse->event->content,
-                                                $this->clientPrivkey,
-                                                $this->nwcUri->getWalletPubkey(),
-                                            );
+
+                                            // Determine encryption method from response event tags
+                                            $responseEncryptionMethod = $this->encryptionMethod; // default
+                                            if (isset($relayResponse->event->tags)) {
+                                                foreach ($relayResponse->event->tags as $tag) {
+                                                    if (is_array($tag) && count($tag) >= 2 && $tag[0] === 'encryption') {
+                                                        $responseEncryptionMethod = $tag[1];
+                                                        break;
+                                                    }
+                                                }
+                                            }
+
+                                            // Decrypt and parse response using the detected encryption method
+                                            if ($responseEncryptionMethod === 'nip44_v2') {
+                                                $conversationKey = \swentel\nostr\Encryption\Nip44::getConversationKey($this->clientPrivkey, $this->nwcUri->getWalletPubkey());
+
+                                                $decryptedContent = \swentel\nostr\Encryption\Nip44::decrypt(
+                                                    $relayResponse->event->content,
+                                                    $conversationKey,
+                                                );
+                                            } else {
+                                                $decryptedContent = \swentel\nostr\Encryption\Nip04::decrypt(
+                                                    $relayResponse->event->content,
+                                                    $this->clientPrivkey,
+                                                    $this->nwcUri->getWalletPubkey(),
+                                                );
+                                            }
                                             $decryptedData = json_decode($decryptedContent, true);
 
                                             // Get expected result type from the original command
@@ -629,6 +652,7 @@ class NwcClient
                                             $this->logger?->debug("NWC: Failed to decrypt response", [
                                                 'error' => $e->getMessage(),
                                                 'event_id' => $relayResponse->event->id ?? 'unknown',
+                                                'content' => $relayResponse->event,
                                             ]);
                                             // Continue processing other messages
                                         }
@@ -783,6 +807,30 @@ class NwcClient
     public function getWalletPubkey(): string
     {
         return $this->nwcUri->getWalletPubkey();
+    }
+
+    /**
+     * Set the encryption method to use for communication.
+     *
+     * @param string $method The encryption method ('nip04' or 'nip44_v2')
+     * @throws \InvalidArgumentException If the encryption method is not supported
+     */
+    public function setEncryption(string $method): void
+    {
+        if (!in_array($method, ['nip04', 'nip44_v2'])) {
+            throw new \InvalidArgumentException("Unsupported encryption method: {$method}. Supported methods are: nip04, nip44_v2");
+        }
+        $this->encryptionMethod = $method;
+    }
+
+    /**
+     * Get the current encryption method.
+     *
+     * @return string
+     */
+    public function getEncryptionMethod(): string
+    {
+        return $this->encryptionMethod;
     }
 
     /**

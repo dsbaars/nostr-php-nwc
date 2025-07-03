@@ -20,8 +20,9 @@ class InfoEvent extends Event
      *
      * @param array $supportedMethods Array of supported command methods
      * @param array $supportedNotifications Array of supported notification types
+     * @param array $supportedEncryption Array of supported encryption schemes
      */
-    public function __construct(array $supportedMethods = [], array $supportedNotifications = [])
+    public function __construct(array $supportedMethods = [], array $supportedNotifications = [], array $supportedEncryption = [])
     {
         parent::__construct();
 
@@ -34,6 +35,11 @@ class InfoEvent extends Event
         // Add notifications tag if notifications are supported
         if (!empty($supportedNotifications)) {
             $this->addTag(['notifications', implode(' ', $supportedNotifications)]);
+        }
+
+        // Add encryption tag if encryption schemes are supported
+        if (!empty($supportedEncryption)) {
+            $this->addTag(['encryption', implode(' ', $supportedEncryption)]);
         }
     }
 
@@ -60,6 +66,23 @@ class InfoEvent extends Event
             if (isset($tag[0]) && $tag[0] === 'notifications' && isset($tag[1])) {
                 $notifications = $tag[1];
                 return empty($notifications) ? [] : explode(' ', $notifications);
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Get supported encryption schemes from tags.
+     *
+     * @return array
+     */
+    public function getSupportedEncryptions(): array
+    {
+        $tags = $this->getTags();
+        foreach ($tags as $tag) {
+            if (isset($tag[0]) && $tag[0] === 'encryption' && isset($tag[1])) {
+                $encryption = $tag[1];
+                return empty($encryption) ? [] : explode(' ', $encryption);
             }
         }
         return [];
@@ -95,5 +118,26 @@ class InfoEvent extends Event
     public function supportsNotification(string $notificationType): bool
     {
         return in_array($notificationType, $this->getSupportedNotifications());
+    }
+
+    /**
+     * Check if encryption is supported.
+     *
+     * @return bool
+     */
+    public function supportedEncryption(): bool
+    {
+        return !empty($this->getSupportedEncryptions());
+    }
+
+    /**
+     * Check if a specific encryption scheme is supported.
+     *
+     * @param string $encryptionScheme
+     * @return bool
+     */
+    public function supportsEncryptionScheme(string $encryptionScheme): bool
+    {
+        return in_array($encryptionScheme, $this->getSupportedEncryptions());
     }
 }
