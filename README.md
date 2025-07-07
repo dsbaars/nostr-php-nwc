@@ -15,7 +15,7 @@ Nostr Wallet Connect (NWC) allows applications to connect to Lightning wallets o
 
 - **Client-side functionality** for connecting to NWC wallet services
 - **Complete command support** for all major Lightning operations
-- **Secure encryption** using NIP-04 for wallet communications
+- **Secure encryption** using NIP-04 (deprecated) or NIP-44 (recommended) for wallet communications
 - **Comprehensive error handling** with specific exception types
 - **Event-driven architecture** following Nostr patterns
 
@@ -34,7 +34,7 @@ Nostr Wallet Connect (NWC) allows applications to connect to Lightning wallets o
 - **Get Info** - Retrieve wallet capabilities
 
 ### 🔐 Security
-- NIP-04 encryption for all wallet communications
+- NIP-04/NIP-44 encryption for wallet communications
 - Proper key management and validation
 - Secure event signing and verification
 
@@ -172,7 +172,8 @@ This implementation provides **complete coverage** of the NIP-47 specification. 
 
 | Feature | Description | Implementation | Notes |
 |---------|-------------|---------------|-------|
-| **NIP-04 Encryption** | End-to-end encryption of commands/responses | ✅ | All wallet communications encrypted |
+| **NIP-04 Encryption** | End-to-end encryption of commands/responses | ✅ | Deprecated, using NIP-44 recommended |
+| **NIP-44 Encryption** | End-to-end encryption of commands/responses | ✅ | All wallet communications encrypted |
 | **Event Signing** | Cryptographic signatures on all events | ✅ | Prevents tampering |
 | **Key Isolation** | Unique keys per wallet connection | ✅ | Improves privacy |
 | **Relay Authentication** | Optional relay-level auth | ✅ | Metadata protection |
@@ -368,7 +369,7 @@ This implementation supports:
 - ✅ All standard commands (get_info, get_balance, pay_invoice, make_invoice, lookup_invoice, list_transactions, pay_keysend, multi_pay_invoice, multi_pay_keysend)
 - ✅ All notification types (payment_received, payment_sent)
 - ✅ All error codes per specification
-- ✅ Proper NIP-04 encryption
+- ✅ Proper NIP-04/NIP-44 encryption
 - ✅ URI format validation
 - ✅ Relay communication
 - ✅ Event signing and verification
@@ -376,7 +377,7 @@ This implementation supports:
 
 ## Security Considerations
 
-- **Encryption**: All communications are encrypted using NIP-04
+- **Encryption**: All communications are encrypted using NIP-04/NIP-44
 - **Authentication**: Events are signed with client private keys
 - **Validation**: All inputs are validated before processing
 - **Error Handling**: Sensitive information is not leaked in errors
