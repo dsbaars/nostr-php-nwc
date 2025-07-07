@@ -1,7 +1,7 @@
 # Nostr Wallet Connect (NIP-47) implementation in PHP (nostr-php)
 
 ![CI](https://github.com/dsbaars/nostr-php-nwc/actions/workflows/ci.yml/badge.svg)
-![Packagist PHP Version](https://img.shields.io/packagist/dependency-v/dsbaars/nostr-php-nwc/php)
+![Packagist PHP Version](https://img.shields.io/packagist/v/dsbaars/nostr-php-nwc)
 
 This project contains a complete client-side implementation of [NIP-47 Nostr Wallet Connect](https://github.com/nostr-protocol/nips/blob/master/47.md) for PHP, building upon [nostr-php](https://github.com/nostrver-se/nostr-php).
 
