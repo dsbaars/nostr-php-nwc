@@ -96,6 +96,11 @@ class NwcUri implements NwcUriInterface
         // Handle multiple relays
         $relays = $params['relay'];
         foreach ($relays as $relay) {
+            // Check if we need to decode the relay URL provided in the request parameter.
+            $relayURLIsEncoded = urlencode(urldecode($relay)) === $relay;
+            if ($relayURLIsEncoded) {
+              $relay = urldecode($relay);
+            }
             if (!filter_var($relay, FILTER_VALIDATE_URL) || !str_starts_with($relay, 'wss://')) {
                 throw new InvalidUriException("Invalid relay URL: $relay");
             }

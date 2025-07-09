@@ -90,7 +90,12 @@ class NwcClient
         $relays = [];
 
         foreach ($this->nwcUri->getRelays() as $relayUrl) {
-            $relays[] = new Relay($relayUrl);
+          // Check if we need to decode the relay URL.
+          $relayURLIsEncoded = urlencode(urldecode($relayUrl)) === $relayUrl;
+          if ($relayURLIsEncoded) {
+            $relayUrl = urldecode($relayUrl);
+          }
+          $relays[] = new Relay($relayUrl);
         }
 
         $this->relaySet->setRelays($relays);
@@ -152,11 +157,11 @@ class NwcClient
                             $infoEvent = new InfoEvent();
                             $infoEvent->setId($response->event->id);
                             $infoEvent->setPublicKey($response->event->pubkey);
-                            $infoEvent->setCreatedAt($response->event->created_at);
+                            $infoEvent->setCreatedAt($response->event->created_at ?? 0);
                             $infoEvent->setKind($response->event->kind);
                             $infoEvent->setContent($response->event->content);
                             $infoEvent->setTags($response->event->tags ?? []);
-                            $infoEvent->setSignature($response->event->sig);
+                            $infoEvent->setSignature($response->event->sig ?? '');
 
                             return $infoEvent;
                         }

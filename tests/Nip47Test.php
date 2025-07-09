@@ -19,7 +19,7 @@ class Nip47Test extends TestCase
     {
         $this->validWalletPubkey = 'b889ff5b1513b641e2a139f661a661364979c5beee91842f8f0ef42ab558e9d4';
         $this->validSecret = '71a8c14c1407c113601079c4302dab36460f0ccd0ad506f1f2dc73b5100e4f3c';
-        $this->validRelays = ['wss://relay.damus.io', 'wss://relay.getalby.com/v1'];
+        $this->validRelays = ['wss://relay.damus.io', 'wss://relay.getalby.com/v1', 'wss%253A%252F%252Fcoinos.io%252Frelay%252F', 'wss%3A%2F%2Frelay.coinos.io'];
         $this->validLud16 = 'wallet@example.com';
 
         $this->validNwcUri = 'nostr+walletconnect://' . $this->validWalletPubkey
